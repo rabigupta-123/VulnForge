@@ -1,0 +1,291 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  --text-primary: #171717;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --border-color: #e5e7eb;
+  --primary: #1F57E7;
+  --primary-hover: #1d4ed8;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+/* Custom base styles for Light Theme */
+body {
+  background-color: #F4F5F6;
+  color: #171717;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(31, 87, 231, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(23, 23, 23, 0.02) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Sub-grid mesh pattern */
+.bg-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.015) 1px, transparent 1px);
+}
+
+/* Scrollbar customizations */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4F5F6;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+/* Custom radar scan animation */
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+.animate-radar-pulse {
+  animation: radar-pulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* Shimmer effect for skeleton loader views */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.02) 20%,
+    rgba(0, 0, 0, 0.04) 60%,
+    rgba(0, 0, 0, 0)
+  );
+  animation: shimmer 1.8s infinite;
+  content: '';
+}
+
+.glow-card-border {
+  position: relative;
+}
+.glow-card-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(31, 87, 231, 0.15), rgba(139, 92, 246, 0.15));
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.4;
+  transition: opacity 0.25s ease;
+}
+.glow-card-border:hover::before {
+  opacity: 1;
+}
+
+/* Glassmorphism Card Wrapper */
+.glass-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: #171717 !important;
+}
+
+.glass-card:hover {
+  border-color: rgba(31, 87, 231, 0.25) !important;
+  box-shadow: 0 8px 30px 0 rgba(31, 87, 231, 0.08) !important;
+}
+
+/* Headings colors */
+h1, h2, h3, h4, h5, h6 {
+  color: #171717 !important;
+}
+
+/* Custom table styling in Light Theme */
+.custom-table {
+  @apply w-full border-collapse text-left text-xs;
+}
+.custom-table th {
+  @apply border-b border-border text-text-secondary font-semibold uppercase tracking-wider px-5 py-4 bg-background-card/50;
+}
+.custom-table td {
+  @apply border-b border-border/50 px-5 py-4 align-middle text-text-primary;
+}
+.custom-table tr:hover td {
+  @apply bg-background-hover/30;
+}
+
+/* Ticker container styling */
+.ticker-container {
+  @apply flex items-center bg-red-50 border-b border-red-200 h-9 overflow-hidden text-xs text-red-700 select-none shrink-0;
+}
+.ticker-label {
+  @apply bg-red-100 border-r border-red-200 px-3.5 h-full flex items-center font-bold tracking-wider uppercase text-[10px] text-red-700 shrink-0 z-10;
+}
+.ticker-wrap {
+  @apply flex-1 overflow-hidden relative w-full h-full flex items-center;
+}
+.ticker-track {
+  @apply flex items-center whitespace-nowrap animate-[ticker_50s_linear_infinite] gap-12 pl-4;
+}
+.ticker-item {
+  @apply flex items-center gap-2 hover:text-red-900 transition-colors shrink-0;
+}
+.ticker-dot {
+  @apply w-1.5 h-1.5 bg-red-600 rounded-full animate-ping;
+}
+
+@keyframes ticker {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-33.33%, 0, 0); }
+}
+
+.pulse-glow {
+  @apply animate-pulse bg-primary/10 border border-primary/20 shadow-glow;
+}
+
+/* Tab button styles for Threat Intelligence Hub */
+.sub-nav-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #5C5E62;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.sub-nav-tab:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #171717;
+}
+.sub-nav-tab.active {
+  background: #ffffff;
+  color: #1F57E7;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.sub-tab-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Status badges with high contrast */
+.badge-verified {
+  color: #166534 !important;
+  background: #dcfce7 !important;
+  border: 1px solid #bbf7d0 !important;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.badge-pending {
+  color: #92400e !important;
+  background: #fef3c7 !important;
+  border: 1px solid #fde68a !important;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.badge-failed {
+  color: #991b1b !important;
+  background: #fee2e2 !important;
+  border: 1px solid #fca5a5 !important;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Callout notice boxes */
+.pending-notice-box {
+  background: #fefce8 !important;
+  border: 1px solid #fef08a !important;
+  color: #78350f !important;
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* Fade-in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in-up {
+  animation: fadeInUp 0.35s ease-out;
+}
+
+/* Scale-in animation */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Animate fade-in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}

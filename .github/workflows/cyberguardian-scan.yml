@@ -1,0 +1,58 @@
+name: CyberGuardian Security Scan
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cyberguardian-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Webhook Scan
+        id: trigger
+        run: |
+          RESPONSE=$(curl -s -X POST "http://localhost:8000/api/v1/ci/webhook-scan" \
+            -H "Content-Type: application/json" \
+            -d '{"asset_id": "${{ secrets.CYBERGUARDIAN_ASSET_ID }}", "ci_token": "${{ secrets.CYBERGUARDIAN_CI_TOKEN }}"}')
+          
+          SCAN_ID=$(echo $RESPONSE | grep -oP '"scan_id":"\K[^"]+')
+          if [ -z "$SCAN_ID" ]; then
+            echo "Failed to trigger scan: $RESPONSE"
+            exit 1
+          fi
+          echo "Scan successfully queued with ID: $SCAN_ID"
+          echo "scan_id=$SCAN_ID" >> $GITHUB_OUTPUT
+
+      - name: Poll Scan Status
+        run: |
+          SCAN_ID="${{ steps.trigger.outputs.scan_id }}"
+          echo "Polling status for scan: $SCAN_ID"
+          
+          while true; do
+            STATUS_RES=$(curl -s "http://localhost:8000/api/v1/scans/$SCAN_ID")
+            STATUS=$(echo $STATUS_RES | grep -oP '"status":"\K[^"]+')
+            
+            echo "Current status: $STATUS"
+            if [ "$STATUS" = "completed" ]; then
+              break
+            elif [ "$STATUS" = "failed" ]; then
+              echo "Scan execution failed on the server."
+              exit 1
+            fi
+            sleep 10
+          done
+
+      - name: Evaluate Finding Severities
+        run: |
+          SCAN_ID="${{ steps.trigger.outputs.scan_id }}"
+          SCAN_DATA=$(curl -s "http://localhost:8000/api/v1/scans/$SCAN_ID")
+          
+          # Check if there are any critical findings in the scan results
+          CRITICAL_COUNT=$(echo $SCAN_DATA | grep -o '"severity":"critical"' | wc -l)
+          if [ "$CRITICAL_COUNT" -gt 0 ]; then
+            echo "🚨 BUILD FAILURE: Detected $CRITICAL_COUNT critical vulnerabilities in the latest scan!"
+            exit 1
+          else
+            echo "✅ Security build checks passed. No critical findings detected."
+          fi
